@@ -49,6 +49,7 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
+  ype: LoadBalancer
   selector:
     app: postgres
   ports:

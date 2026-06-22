@@ -6,7 +6,6 @@ import com.tickets.management.model.Seat;
 import com.tickets.management.repository.EventRepository;
 import com.tickets.management.repository.SeatRepository;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,0 +1,32 @@
+package com.tickets.booking.kafka.listener;
+
+import com.tickets.management.dto.TicketReservationCreatedEventDTO;
+import com.tickets.booking.service.BookingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TicketReservationListener {
+
+    private final BookingService bookingService;
+    private final Logger log = LoggerFactory.getLogger(TicketReservationListener.class);
+
+    public TicketReservationListener(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
+
+    @KafkaListener(topics = "ticket-reservation-created", groupId = "booking-service-group", containerFactory = "kafkaListenerContainerFactory")
+    public void onMessage(@Payload TicketReservationCreatedEventDTO dto) {
+        log.info("Received TicketReservationCreatedEvent: eventId={} eventName={} totalSeats={} timestamp={}",
+                dto.getEventId(), dto.getEventName(), dto.getTotalSeats(), dto.getTimestamp());
+
+        try {
+            bookingService.processReservation(dto);
+        } catch (Exception ex) {
+            log.error("Failed processing event eventId={}: {}", dto.getEventId(), ex.getMessage(), ex);
+        }
+    }
+}
