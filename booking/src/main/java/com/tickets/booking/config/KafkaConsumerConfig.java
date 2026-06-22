@@ -72,8 +72,8 @@ public class KafkaConsumerConfig {
 
         // Dead-letter publishing recoverer with simple fixed backoff
         var recoverer = new org.springframework.kafka.listener.DeadLetterPublishingRecoverer(template,
-                (record, ex) -> new org.apache.kafka.common.TopicPartition(record.topic() + ".DLT",
-                        record.partition()));
+                (message, ex) -> new org.apache.kafka.common.TopicPartition(message.topic() + ".DLT",
+                        message.partition()));
 
         // retry two times then publish to DLT
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(recoverer, new FixedBackOff(1000L, 2L));

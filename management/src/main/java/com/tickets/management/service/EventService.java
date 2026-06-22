@@ -5,11 +5,16 @@ import com.tickets.management.model.Event;
 import com.tickets.management.model.Seat;
 import com.tickets.management.repository.EventRepository;
 import com.tickets.management.repository.SeatRepository;
+
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
+
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class EventService {
 
@@ -50,7 +55,7 @@ public class EventService {
 
         seat.reserve();
         seatRepository.save(seat);
-
+        log.info("Seat {} reserved successfully for user {}", seatId, userId);
         kafkaTemplate.send(
                 "ticket-reservation-created",
                 new TicketReservationCreatedEvent(seatId, userId));

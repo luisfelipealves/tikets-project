@@ -9,12 +9,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TicketReservationListener {
+public class TicketReservationConsumer {
 
     private final BookingService bookingService;
-    private final Logger log = LoggerFactory.getLogger(TicketReservationListener.class);
+    private final Logger log = LoggerFactory.getLogger(TicketReservationConsumer.class);
 
-    public TicketReservationListener(BookingService bookingService) {
+    public TicketReservationConsumer(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 

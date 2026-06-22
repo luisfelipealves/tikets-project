@@ -26,8 +26,8 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: "postgres"
             - name: SPRING_DATASOURCE_PASSWORD
-              value: "password123"
+              value: "password123"            
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "host.docker.internal:9092"
+              value: "kafka-service:9092"            
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: "update"
