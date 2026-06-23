@@ -9,6 +9,7 @@ import com.tickets.management.repository.SeatRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,9 @@ public class EventService {
     public Event createEvent(String name, int totalSeats) {
         Event event = new Event(name, LocalDateTime.now());
 
-        for (int index = 1; index <= totalSeats; index++) {
-            String seatNumber = "Seat-" + index;
-            Seat seat = new Seat(seatNumber);
-            event.addSeat(seat);
-        }
+        IntStream.rangeClosed(1, totalSeats)
+                .mapToObj(index -> new Seat("Seat-" + index))
+                .forEach(event::addSeat);
 
         return eventRepository.save(event);
     }
