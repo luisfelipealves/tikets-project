@@ -4,14 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'management/**' # <--- O FILTRO MÁGICO ESTÁ AQUI!
+      - 'management-service/**'
 
 jobs:
-  build-and-push:
+  compile:
+    name: ☕ Maven Compile
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -23,32 +21,57 @@ jobs:
         java-version: '21'
         cache: 'maven'
 
-    # Como estamos num Monorepo, precisamos de dizer ao Maven para rodar 
-    # DENTRO da pasta correta do microsserviço usando o 'working-directory'
     - name: Maven compile
-      working-directory: ./management
-      run: mvn clean package -DskipTests # Se o mvnw estiver na raiz, usa ../mvnw
+      working-directory: ./management-service
+      run: mvn clean package -DskipTests
 
-    - name:  Docker Hub Login
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: management-jar
+        path: management-service/target/*.jar
+
+  docker:
+    name: 🐳 Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: compile
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: management-jar
+        path: management-service/target/
+    - name: Docker Hub Login
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
     - name: Docker build and push
       uses: docker/build-push-action@v5
       with:
-        context: ./management
+        context: ./management-service
         push: true
         tags: |
           luisfelipealves/management-service:latest
           luisfelipealves/management-service:${{ github.sha }}
-    - name: Update management-service tag in management-deployment.yaml
+
+  deploy:
+    name: 🚀 GitOps Update (ArgoCD)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: docker 
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Update management-service tag in infrastructure YAML
       run: |
-        sed -i 's|luisfelipealves/management-service:.*|luisfelipealves/management-service:${{ github.sha }}|g' infrastructure/k8s/management-deployment.yaml
-    - name: Commit and push changes to management-deployment.yaml
+        sed -i 's|luisfelipealves/management-service:.*|luisfelipealves/management-service:${{ github.sha }}|g' infrastructure/k8s/gateway.yaml
+    - name: Commit & Push automático sem conflitos
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "chore(cd): update management-service tag to ${{ github.sha }} [skip ci]"
-        file_pattern: 'infrastructure/k8s/management-deployment.yaml'
+        file_pattern: 'infrastructure/k8s/gateway.yaml'
         push_options: '--force-with-lease'
