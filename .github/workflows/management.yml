@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'management/**'
+  workflow_dispatch:
 
 jobs:
   compile:
