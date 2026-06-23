@@ -23,7 +23,7 @@ jobs:
         cache: 'maven'
 
     - name: Maven compile
-      working-directory: ./management-service
+      working-directory: ./management
       run: mvn clean package -DskipTests
 
     - name: Upload Build Artifact
