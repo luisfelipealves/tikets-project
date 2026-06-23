@@ -9,7 +9,9 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -41,3 +43,14 @@ jobs:
         tags: |
           luisfelipealves/management-service:latest
           luisfelipealves/management-service:${{ github.sha }}
+    - name: Update management-service tag in management-deployment.yaml
+      run: |
+        sed -i 's|management-service:.*|management-service:${{ github.sha }}|g' infrastructure/k8s/management-deployment.yaml
+
+    - name: Commit and push changes to management-deployment.yaml
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add infrastructure/k8s/management-deployment.yaml
+        git commit -m "chore(cd): update management-service tag to ${{ github.sha }} [skip ci]"
+        git push
