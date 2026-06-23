@@ -74,5 +74,5 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "chore(cd): update management-service tag to ${{ github.sha }} [skip ci]"
-        file_pattern: 'infrastructure/k8s/gateway.yaml'
+        file_pattern: 'infrastructure/k8s/management-deployment.yaml'
         push_options: '--force-with-lease'
