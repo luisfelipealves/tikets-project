@@ -52,7 +52,7 @@ jobs:
     - name: Docker build and push
       uses: docker/build-push-action@v5
       with:
-        context: ./management-service
+        context: ./management
         push: true
         tags: |
           luisfelipealves/management-service:latest
