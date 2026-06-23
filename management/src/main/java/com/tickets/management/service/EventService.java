@@ -39,7 +39,7 @@ public class EventService {
         IntStream.rangeClosed(1, totalSeats)
                 .mapToObj(index -> new Seat("Seat-" + index))
                 .forEach(event::addSeat);
-
+        log.info("Event {} created with {} seats", name, totalSeats);
         return eventRepository.save(event);
     }
 
