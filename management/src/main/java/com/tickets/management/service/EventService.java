@@ -54,7 +54,7 @@ public class EventService {
 
         seat.reserve();
         seatRepository.save(seat);
-        log.info("Seat {} reserved successfully for user {} on event {}", seatId, userId, seat.getEvent().getName());
+        log.info("Seat {} reserved successfully for user {}", seatId, userId);
         kafkaTemplate.send(
                 "ticket-reservation-created",
                 new TicketReservationCreatedEvent(seatId, userId));
