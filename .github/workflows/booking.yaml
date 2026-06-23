@@ -25,7 +25,7 @@ jobs:
     # DENTRO da pasta correta do microsserviço usando o 'working-directory'
     - name: Maven compile
       working-directory: ./booking
-      run: ./mvnw clean package -DskipTests # Se o mvnw estiver na raiz, usa ../mvnw
+      run: mvn clean package -DskipTests # Se o mvnw estiver na raiz, usa ../mvnw
 
     - name:  Docker Hub Login
       uses: docker/login-action@v3
