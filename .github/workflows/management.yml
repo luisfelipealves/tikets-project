@@ -45,8 +45,7 @@ jobs:
           luisfelipealves/management-service:${{ github.sha }}
     - name: Update management-service tag in management-deployment.yaml
       run: |
-        sed -i 's|management-service:.*|management-service:${{ github.sha }}|g' infrastructure/k8s/management-deployment.yaml
-
+        sed -i 's|luisfelipealves/management-service:.*|luisfelipealves/management-service:${{ github.sha }}|g' infrastructure/k8s/management-deployment.yaml
     - name: Commit and push changes to management-deployment.yaml
       run: |
         git config --global user.name "github-actions[bot]"

@@ -44,8 +44,7 @@ jobs:
           luisfelipealves/booking-service:${{ github.sha }}
     - name: Update booking-service tag in booking-deployment.yaml
       run: |
-        sed -i 's|booking-service:.*|booking-service:${{ github.sha }}|g' infrastructure/k8s/booking-deployment.yaml
-
+        sed -i 's|luisfelipealves/booking-service:.*|luisfelipealves/booking-service:${{ github.sha }}|g' infrastructure/k8s/booking-deployment.yaml
     - name: Commit and push changes to booking-deployment.yaml
       run: |
         git config --global user.name "github-actions[bot]"
