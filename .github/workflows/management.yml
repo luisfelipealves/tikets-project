@@ -1,0 +1,43 @@
+name: Management Service CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'management/**' # <--- O FILTRO MÁGICO ESTÁ AQUI!
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setting Java 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        cache: 'maven'
+
+    # Como estamos num Monorepo, precisamos de dizer ao Maven para rodar 
+    # DENTRO da pasta correta do microsserviço usando o 'working-directory'
+    - name: Maven compile
+      working-directory: ./management
+      run: ../mvnw clean package -DskipTests # Se o mvnw estiver na raiz, usa ../mvnw
+
+    - name:  Docker Hub Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Docker build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: ./management
+        push: true
+        tags: |
+          luisfelipealves/management-service:latest
+          luisfelipealves/management-service:${{ github.sha }}
