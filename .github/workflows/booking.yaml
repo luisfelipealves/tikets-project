@@ -46,10 +46,8 @@ jobs:
       run: |
         sed -i 's|luisfelipealves/booking-service:.*|luisfelipealves/booking-service:${{ github.sha }}|g' infrastructure/k8s/booking-deployment.yaml
     - name: Commit and push changes to booking-deployment.yaml
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add infrastructure/k8s/booking-deployment.yaml
-        git commit -m "chore(cd): update booking-service tag to ${{ github.sha }} [skip ci]"
-        git pull --rebase origin main
-        git push
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "chore(cd): update booking-service tag to ${{ github.sha }} [skip ci]"
+        file_pattern: 'infrastructure/k8s/booking-deployment.yaml'
+        push_options: '--force-with-lease'
