@@ -32,8 +32,8 @@ public class BookingService {
         entity.setStatus(BookingStatus.PROCESSED);
 
         BookingHistory saved = repository.save(entity);
-        log.info("Saved BookingHistory id={} eventId={} eventName='{}' totalSeats={} status={}",
-                saved.getId(), saved.getEventId(), saved.getEventName(), saved.getTotalSeats(), saved.getStatus());
+        log.info("Saved BookingHistory id={} eventName={} eventName='{}' totalSeats={} status={}",
+                saved.getId(), saved.getEventName(), saved.getEventName(), saved.getTotalSeats(), saved.getStatus());
         return saved;
     }
 }
