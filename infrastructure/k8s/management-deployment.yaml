@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: management-app
-          image: luisfelipealves/management-service:d38526822caa302c79387efe23a2b631795b0a46
+          image: luisfelipealves/management-service:da02982ab7f130cd94cd2c09f2605bc1b2e802fb
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080
