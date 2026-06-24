@@ -49,7 +49,7 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: postgres
   ports:
