@@ -28,13 +28,19 @@ kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubuse
 echo -e "${YELLOW}Exposing ArgoCD on localhost...${NC}"
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
-# 3. Wait for CRDs to be ready
+echo "Waiting for ArgoCD to be ready (this may take a few moments)..."
+kubectl wait --namespace argocd \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
+  
+  # 4. Wait for CRDs to be ready
 echo -e "\n${YELLOW}[3/4] Waiting for ArgoCD CRDs to be ready...${NC}"
 echo "This might take a few seconds..."
 kubectl wait --for=condition=established --timeout=60s crd/applications.argoproj.io
 echo -e "${GREEN}✓ CRDs successfully installed!${NC}"
 
-# 4. Apply GitOps Root Application
+# 5. Apply GitOps Root Application
 echo -e "\n${YELLOW}[4/4] Connecting cluster to GitOps (ArgoCD)...${NC}"
 if [ -f "infrastructure/k8s/install-argo.yaml" ]; then
     kubectl apply -f infrastructure/k8s/install-argo.yaml
