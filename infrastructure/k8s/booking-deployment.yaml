@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: booking-app
-          image: luisfelipealves/booking-service:09bac493ff828df2f07a688d10ff4bc00728b97a
+          image: luisfelipealves/booking-service:1a01b906e835119b5d3dde936f93271fd34e0792
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080
