@@ -9,6 +9,7 @@ import com.tickets.management.repository.SeatRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.stream.IntStream;
 
 import org.springframework.kafka.core.KafkaTemplate;
@@ -34,7 +35,7 @@ public class EventService {
 
     @Transactional
     public Event createEvent(String name, int totalSeats) {
-        Event event = new Event(name, LocalDateTime.now());
+        Event event = new Event(name, LocalDateTime.now(ZoneId.of("UTC")));
 
         IntStream.rangeClosed(1, totalSeats)
                 .mapToObj(index -> new Seat("Seat-" + index))
@@ -57,6 +58,12 @@ public class EventService {
         log.info("Seat {} reserved successfully for user {} on event {}", seatId, userId, seat.getEvent().getName());
         kafkaTemplate.send(
                 "ticket-reservation-created",
-                new TicketReservationCreatedEvent(seatId, userId));
+                new TicketReservationCreatedEvent(
+                        seat.getEvent().getId().toString(),
+                        seat.getEvent().getName(),
+                        seat.getEvent().getSeats().size(),
+                        LocalDateTime.now(ZoneId.of("UTC"))
+                )
+        );
     }
 }

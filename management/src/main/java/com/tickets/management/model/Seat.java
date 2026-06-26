@@ -25,7 +25,7 @@ public class Seat {
     @Column(name = "is_reserved", nullable = false)
     private boolean isReserved;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id", nullable = false)
     @JsonIgnoreProperties("seats")
     private Event event;

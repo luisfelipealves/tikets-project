@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,8 +28,8 @@ public class BookingService {
     @Transactional
     public BookingHistory processReservation(TicketReservationCreatedEventDTO dto) {
         BookingHistory entity = mapper.toEntity(dto);
-        entity.setEventId(dto.getEventId());
-        entity.setProcessedAt(LocalDateTime.now());
+        entity.setEventId(dto.eventId());
+        entity.setProcessedAt(LocalDateTime.now(ZoneId.of("UTC")));
         entity.setStatus(BookingStatus.PROCESSED);
 
         BookingHistory saved = repository.save(entity);

@@ -21,12 +21,12 @@ public class TicketReservationConsumer {
     @KafkaListener(topics = "ticket-reservation-created", groupId = "booking-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void onMessage(@Payload TicketReservationCreatedEventDTO dto) {
         log.info("Received TicketReservationCreatedEvent: eventId={} eventName={} totalSeats={} timestamp={}",
-                dto.getEventId(), dto.getEventName(), dto.getTotalSeats(), dto.getTimestamp());
+                dto.eventId(), dto.eventName(), dto.totalSeats(), dto.timestamp());
 
         try {
             bookingService.processReservation(dto);
         } catch (Exception ex) {
-            log.error("Failed processing event eventId={}: {}", dto.getEventId(), ex.getMessage(), ex);
+            log.error("Failed processing event eventId={}: {}", dto.eventId(), ex.getMessage(), ex);
         }
     }
 }
