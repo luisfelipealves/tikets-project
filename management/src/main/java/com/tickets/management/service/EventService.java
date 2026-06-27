@@ -61,9 +61,7 @@ public class EventService {
                 new TicketReservationCreatedEvent(
                         seat.getEvent().getId().toString(),
                         seat.getEvent().getName(),
-                        seat.getEvent().getSeats().size(),
-                        LocalDateTime.now(ZoneId.of("UTC"))
-                )
-        );
+                        seat.getId().intValue(),
+                        LocalDateTime.now(ZoneId.of("UTC"))));
     }
 }
