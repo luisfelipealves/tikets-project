@@ -27,6 +27,7 @@ public class TicketReservationConsumer {
             bookingService.processReservation(dto);
         } catch (Exception ex) {
             log.error("Failed processing event eventId={}: {}", dto.eventId(), ex.getMessage(), ex);
+            throw ex; // Rethrow the exception to trigger retry and dead-letter handling
         }
     }
 }

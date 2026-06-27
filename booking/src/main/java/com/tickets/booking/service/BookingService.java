@@ -2,6 +2,7 @@ package com.tickets.booking.service;
 
 import com.tickets.booking.domain.BookingHistory;
 import com.tickets.booking.domain.BookingStatus;
+import com.tickets.booking.exception.PaymentFailedException;
 import com.tickets.booking.mapper.BookingMapper;
 import com.tickets.booking.repository.BookingHistoryRepository;
 import com.tickets.management.dto.TicketReservationCreatedEventDTO;
@@ -38,7 +39,8 @@ public class BookingService {
             BookingHistory saved = repository.save(entity);
             log.warn("Simulated payment failed for booking eventId={} status={}", saved.getEventId(),
                     saved.getStatus());
-            return saved;
+            throw new PaymentFailedException(
+                    "Payment simulation failed for booking eventId='%s'".formatted(saved.getEventId()));
         }
 
         entity.setStatus(BookingStatus.PROCESSED);
