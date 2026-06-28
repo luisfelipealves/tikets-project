@@ -27,7 +27,14 @@ public class TicketReservationConsumer {
             bookingService.processReservation(dto);
         } catch (Exception ex) {
             log.error("Failed processing event eventId={}: {}", dto.eventId(), ex.getMessage(), ex);
-            throw ex; // Rethrow the exception to trigger retry and dead-letter handling
+            throw new RuntimeException("Failed processing TicketReservationCreatedEvent", ex);
         }
+    }
+
+    @KafkaListener(topics = "ticket-reservation-created.DLT", groupId = "booking-service-dlt-group", containerFactory = "kafkaListenerContainerFactory")
+    public void onDeadLetter(@Payload TicketReservationCreatedEventDTO dto) {
+        log.warn(
+                "Dead-letter received for TicketReservationCreatedEvent: eventId={} eventName={} totalSeats={} timestamp={}",
+                dto.eventId(), dto.eventName(), dto.totalSeats(), dto.timestamp());
     }
 }

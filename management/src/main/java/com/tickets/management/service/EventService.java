@@ -64,4 +64,18 @@ public class EventService {
                         seat.getId().intValue(),
                         LocalDateTime.now(ZoneId.of("UTC"))));
     }
+
+    @Transactional
+    public void cancelReservation(Long seatId) {
+        Seat seat = seatRepository.findByIdWithLock(seatId)
+                .orElseThrow(() -> new IllegalArgumentException("Seat not found with id: " + seatId));
+
+        if (!seat.isReserved()) {
+            throw new IllegalStateException("Seat " + seatId + " is not reserved.");
+        }
+
+        seat.release();
+        seatRepository.save(seat);
+        log.info("Seat {} reservation cancelled successfully for event {}", seatId, seat.getEvent().getName());
+    }
 }
